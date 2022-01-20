@@ -77,4 +77,15 @@ build {
       "sudo chmod +x /usr/local/bin/docker-compose"
     ]
   }
+
+  provisioner "shell" {
+    inline = [
+      "echo Installing Wireguard",
+      "sudo amazon-linux-extras install -y epel",
+      "sudo curl -L -o /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo",
+      "sudo yum install -y wireguard-dkms wireguard-tools",
+      "sudo mkdir -p /etc/wireguard",
+      "sudo systemctl enable wg-quick@wg0.service"
+    ]
+  }
 }
