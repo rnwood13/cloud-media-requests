@@ -14,8 +14,4 @@ data "aws_ssm_parameter" "key_pair_name" {
 
 data "aws_key_pair" "main" {
   key_name = data.aws_ssm_parameter.key_pair_name.value
-  # filter {
-  #   name   = "tag:Component"
-  #   values = ["web"]
-  # }
 }
