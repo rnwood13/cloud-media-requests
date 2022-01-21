@@ -1,0 +1,10 @@
+project_name           = "Woodybox"
+vpc_name               = "Woodybox"
+vpc_region             = "us-east-2"
+vpc_cidr               = "10.0.0.0/16"
+vpc_azs                = ["us-east-2a", "us-east-2b", "us-east-2c"]
+vpc_private_subnets    = []
+vpc_public_subnets     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+vpc_enable_nat_gateway = false
+vpc_enable_vpn_gateway = false
+host_enable            = true
