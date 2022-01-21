@@ -47,3 +47,8 @@ variable "host_enable" {
   type    = bool
   default = true
 }
+
+variable "host_instance_type" {
+  type    = string
+  default = "t3.micro"
+}

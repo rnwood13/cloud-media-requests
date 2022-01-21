@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "woodybox-terraform-state-backend"
+  bucket = "${lower(var.project_name)}-terraform-state-backend"
   versioning {
     enabled = true
   }
