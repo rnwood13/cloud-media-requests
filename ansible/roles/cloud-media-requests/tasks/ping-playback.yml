@@ -1,0 +1,5 @@
+---
+# Simple ping test to make sure things are working
+
+- name: pinging
+  ping:
