@@ -38,5 +38,6 @@ resource "aws_instance" "docker_host" {
 
   tags = {
     Name = "${var.project_name} Docker Host"
+    Task = "Servers"
   }
 }

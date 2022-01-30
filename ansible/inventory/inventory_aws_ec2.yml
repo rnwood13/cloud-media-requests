@@ -1,0 +1,14 @@
+---
+# Dynamically get EC2 hosts
+
+plugin: aws_ec2
+regions:
+  - "us-east-2"
+keyed_groups:
+  - key: tags.Name
+  - key: tags.Project
+  - key: tags.Task
+filters:
+  instance-state-name: running
+compose:
+  ansible_host: public_ip_address
