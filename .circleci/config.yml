@@ -59,6 +59,7 @@ workflows:
   version: 2
   deploy_ami:
     jobs:
+      - packer-test
       - packer-init
       - packer-validate:
           requires:
