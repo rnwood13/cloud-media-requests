@@ -1,0 +1,8 @@
+[Interface]
+Address = {{ wg_private_ip }}/32
+PrivateKey = {{ wg_private_key }}
+
+[Peer]
+PublicKey = {{ wg_public_key }}
+Endpoint = {{ wg_endpoint }}:{{ wg_listen_port }}
+AllowedIPs = {{ wg_allowed_ips }}
