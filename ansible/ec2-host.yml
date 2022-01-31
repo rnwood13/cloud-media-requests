@@ -1,0 +1,9 @@
+---
+# Playbook to deploy media request site via Docker Compose with VPN
+
+- name: Deploy Cloud Media Requests and VPN
+  hosts: _Servers
+  remote_user: ec2-user
+
+  roles:
+    - cloud-media-requests
