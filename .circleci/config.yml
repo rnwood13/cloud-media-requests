@@ -5,8 +5,65 @@ version: 2.1
 orbs:
   terraform: circleci/terraform@3.0.0
 
+jobs:
+  packer/init:
+    docker:
+      - image: hashicorp/packer
+    working_directory: ./packer
+    steps:
+      - checkout
+      - run:
+          name: Initialize
+          command: packer init .
+  packer/validate:
+    docker:
+      - image: hashicorp/packer
+    working_directory: ./packer
+    steps:
+      - checkout
+      - run:
+          name: Validate base
+          command: packer validate .
+  packer/fmt:
+    docker:
+      - image: hashicorp/packer
+    working_directory: ./packer
+    steps:
+      - checkout
+      - run:
+          name: Format
+          command: packer fmt .
+  packer/build:
+    docker:
+      - image: hashicorp/packer
+    working_directory: ./packer
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./packer
+      - run:
+          name: Build AMI
+          command: packer build .
+          no_output_timeout: 15m
+
 workflows:
   version: 2
+  deploy_ami:
+    jobs:
+      - packer/init:
+          context: terraform
+      - packer/validate:
+          context: terraform
+          requires:
+            - packer/init
+      - packer/fmt:
+          context: terraform
+          requires:
+            - packer/validate
+      - packer/build:
+          context: terraform
+          requires:
+            - packer/fmt
   deploy_infrastructure:
     jobs:
       - terraform/fmt:
@@ -28,6 +85,9 @@ workflows:
             - terraform/validate
       - hold:
           type: approval
+          filters:
+            branches:
+              only: main
           requires:
             - terraform/plan
       - terraform/apply:
