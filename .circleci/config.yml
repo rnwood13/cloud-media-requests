@@ -6,60 +6,46 @@ orbs:
   terraform: circleci/terraform@3.0.0
 
 jobs:
-  packer-test:
-    docker:
-      - image: hashicorp/packer
-    working_directory: ~/packer
-    steps:
-      - checkout
-      - run:
-          name: test
-          command: pwd && ls -la
   packer-init:
     docker:
       - image: hashicorp/packer
-    working_directory: ~/packer
     steps:
       - checkout
       - run:
           name: Initialize
-          command: packer init .
+          command: packer init ./packer
   packer-validate:
     docker:
       - image: hashicorp/packer
-    working_directory: ~/packer
     steps:
       - checkout
       - run:
           name: Validate base
-          command: packer validate .
+          command: packer validate ./packer
   packer-fmt:
     docker:
       - image: hashicorp/packer
-    working_directory: ~/packer
     steps:
       - checkout
       - run:
           name: Format
-          command: packer fmt .
+          command: packer fmt ./packer
   packer-build:
     docker:
       - image: hashicorp/packer
-    working_directory: ~/packer
     steps:
       - checkout
       - attach_workspace:
           at: ~/packer
       - run:
           name: Build AMI
-          command: packer build .
+          command: packer build ./packer
           no_output_timeout: 15m
 
 workflows:
   version: 2
   deploy_ami:
     jobs:
-      - packer-test
       - packer-init
       - packer-validate:
           requires:
