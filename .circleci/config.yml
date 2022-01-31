@@ -6,7 +6,7 @@ orbs:
   terraform: circleci/terraform@3.0.0
 
 jobs:
-  packer/init:
+  packer-init:
     docker:
       - image: hashicorp/packer
     working_directory: ./packer
@@ -15,7 +15,7 @@ jobs:
       - run:
           name: Initialize
           command: packer init .
-  packer/validate:
+  packer-validate:
     docker:
       - image: hashicorp/packer
     working_directory: ./packer
@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Validate base
           command: packer validate .
-  packer/fmt:
+  packer-fmt:
     docker:
       - image: hashicorp/packer
     working_directory: ./packer
@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Format
           command: packer fmt .
-  packer/build:
+  packer-build:
     docker:
       - image: hashicorp/packer
     working_directory: ./packer
@@ -50,20 +50,20 @@ workflows:
   version: 2
   deploy_ami:
     jobs:
-      - packer/init:
+      - packer-init:
           context: terraform
-      - packer/validate:
-          context: terraform
-          requires:
-            - packer/init
-      - packer/fmt:
+      - packer-validate:
           context: terraform
           requires:
-            - packer/validate
-      - packer/build:
+            - packer-init
+      - packer-fmt:
           context: terraform
           requires:
-            - packer/fmt
+            - packer-validate
+      - packer-build:
+          context: terraform
+          requires:
+            - packer-fmt
   deploy_infrastructure:
     jobs:
       - terraform/fmt:
