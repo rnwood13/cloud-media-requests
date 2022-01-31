@@ -1,0 +1,5 @@
+---
+# Include all tasks related to Cloud Media Requests
+
+- include_tasks: git-clone.yml
+- include_tasks: wireguard.yml

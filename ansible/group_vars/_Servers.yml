@@ -1,0 +1,13 @@
+---
+# Variables for servers
+
+ansible_ssh_private_key_file: ~/.ssh/aws-key-pair.pem
+repository: https://github.com/rnwood13/docker-nginx-letsencrypt-ombi.git
+
+# Pull variables from AWS Parameter Store
+wg_private_ip: "{{ lookup('aws_ssm', '/woodybox/wireguard/peer-tunnel-address', region='us-east-2', on_missing='error') }}"
+wg_private_key: "{{ lookup('aws_ssm', '/woodybox/wireguard/private-key', region='us-east-2', decrypt=True, on_missing='error') }}"
+wg_public_key: "{{ lookup('aws_ssm', '/woodybox/wireguard/public-key', region='us-east-2', on_missing='error') }}"
+wg_endpoint: "{{ lookup('aws_ssm', '/woodybox/wireguard/endpoint', region='us-east-2', on_missing='error') }}"
+wg_listen_port: "{{ lookup('aws_ssm', '/woodybox/wireguard/endpoint-listen-port', region='us-east-2', on_missing='error') }}"
+wg_allowed_ips: "{{ lookup('aws_ssm', '/woodybox/wireguard/allowed-ips', region='us-east-2', on_missing='error') }}"

@@ -80,6 +80,13 @@ build {
 
   provisioner "shell" {
     inline = [
+      "echo Installing git",
+      "sudo yum install git -y"
+    ]
+  }
+
+  provisioner "shell" {
+    inline = [
       "echo Installing Wireguard",
       "sudo amazon-linux-extras install -y epel",
       "sudo curl -L -o /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo",

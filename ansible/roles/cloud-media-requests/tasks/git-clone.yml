@@ -1,0 +1,9 @@
+---
+# Copy the repo that contains the Docker Compose
+
+- name: Clone docker-nginx-letsencrypt-ombi
+  git:
+    repo: "{{ repository }}"
+    dest: /home/ec2-user/compose
+    clone: yes
+    update: yes
