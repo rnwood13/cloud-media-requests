@@ -6,6 +6,15 @@ orbs:
   terraform: circleci/terraform@3.0.0
 
 jobs:
+  packer-test:
+    docker:
+      - image: hashicorp/packer
+    working_directory: ~/packer
+    steps:
+      - checkout
+      - run:
+          name: test
+          command: pwd && ls -la
   packer-init:
     docker:
       - image: hashicorp/packer
@@ -48,7 +57,7 @@ jobs:
 
 workflows:
   version: 2
-  deploy_ami_and_infrastructure:
+  deploy_ami:
     jobs:
       - packer-init
       - packer-validate:
@@ -61,6 +70,8 @@ workflows:
           context: terraform
           requires:
             - packer-fmt
+  deploy_infrastructure:
+    jobs:
       - terraform/fmt:
           path: ./terraform
           checkout: true
