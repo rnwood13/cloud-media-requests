@@ -9,7 +9,7 @@ jobs:
   packer-init:
     docker:
       - image: hashicorp/packer
-    working_directory: ./packer
+    working_directory: ~/packer
     steps:
       - checkout
       - run:
@@ -18,7 +18,7 @@ jobs:
   packer-validate:
     docker:
       - image: hashicorp/packer
-    working_directory: ./packer
+    working_directory: ~/packer
     steps:
       - checkout
       - run:
@@ -27,7 +27,7 @@ jobs:
   packer-fmt:
     docker:
       - image: hashicorp/packer
-    working_directory: ./packer
+    working_directory: ~/packer
     steps:
       - checkout
       - run:
@@ -36,11 +36,11 @@ jobs:
   packer-build:
     docker:
       - image: hashicorp/packer
-    working_directory: ./packer
+    working_directory: ~/packer
     steps:
       - checkout
       - attach_workspace:
-          at: ./packer
+          at: ~/packer
       - run:
           name: Build AMI
           command: packer build .
@@ -48,28 +48,22 @@ jobs:
 
 workflows:
   version: 2
-  deploy_ami:
+  deploy_ami_and_infrastructure:
     jobs:
-      - packer-init:
-          context: terraform
+      - packer-init
       - packer-validate:
-          context: terraform
           requires:
             - packer-init
       - packer-fmt:
-          context: terraform
           requires:
             - packer-validate
       - packer-build:
           context: terraform
           requires:
             - packer-fmt
-  deploy_infrastructure:
-    jobs:
       - terraform/fmt:
           path: ./terraform
           checkout: true
-          context: terraform
       - terraform/validate:
           path: ./terraform
           checkout: true
