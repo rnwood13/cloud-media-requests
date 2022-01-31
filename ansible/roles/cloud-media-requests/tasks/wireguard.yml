@@ -1,0 +1,22 @@
+---
+# Wireguard tasks
+
+- name: Create Wireguard config directory
+  file:
+    path: "/etc/wireguard"
+    state: directory
+
+- name: Generate Wireguard config
+  template:
+    src: "wg0.conf.j2"
+    dest: "/etc/wireguard/wg0.conf"
+  become: true
+  become_user: root
+
+- name: Start Wireguard server
+  systemd:
+    name: "wg-quick@wg0"
+    state: started
+    enabled: yes
+  become: true
+  become_user: root
