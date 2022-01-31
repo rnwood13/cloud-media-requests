@@ -10,4 +10,4 @@ resource "aws_dynamodb_table" "terraform_lock" {
   tags = {
     "Name" = "DynamoDB Terraform State Lock Table"
   }
-} 
+}
