@@ -6,37 +6,21 @@ orbs:
   terraform: circleci/terraform@3.0.0
 
 jobs:
-  packer-init:
+  packer-build:
     docker:
       - image: hashicorp/packer
+    resource_class: small
     steps:
       - checkout
       - run:
           name: Initialize
           command: packer init ./packer
-  packer-validate:
-    docker:
-      - image: hashicorp/packer
-    steps:
-      - checkout
       - run:
-          name: Validate base
+          name: Validate
           command: packer validate ./packer
-  packer-fmt:
-    docker:
-      - image: hashicorp/packer
-    steps:
-      - checkout
       - run:
           name: Format
-          command: packer fmt ./packer
-  packer-build:
-    docker:
-      - image: hashicorp/packer
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/packer
+          command: packer fmt -check -diff ./packer
       - run:
           name: Build AMI
           command: packer build ./packer
@@ -44,20 +28,18 @@ jobs:
 
 workflows:
   version: 2
-  deploy_ami:
+  packer_build:
+    when:
+      and:
+        - equal: [scheduled_pipeline, << pipeline.trigger_source >>]
+        - equal: ["Packer Build", << pipeline.schedule.name >>]
     jobs:
-      - packer-init
-      - packer-validate:
-          requires:
-            - packer-init
-      - packer-fmt:
-          requires:
-            - packer-validate
       - packer-build:
           context: terraform
-          requires:
-            - packer-fmt
   deploy_infrastructure:
+    when:
+      not:
+        equal: [scheduled_pipeline, << pipeline.trigger_source >>]
     jobs:
       - terraform/fmt:
           path: ./terraform
