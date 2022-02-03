@@ -5,13 +5,25 @@
 # and are using appropriate values.
 
 data "aws_ssm_parameter" "ssh_cidrs" {
-  name = "${var.project_name}-SSH-CIDRs"
+  name = "/${lower(var.project_name)}/terraform/ssh-cidrs"
 }
 
 data "aws_ssm_parameter" "key_pair_name" {
-  name = "${var.project_name}-Key-Pair-Name"
+  name = "/${lower(var.project_name)}/terraform/key-pair-name"
+}
+
+data "aws_ssm_parameter" "aws_route53_zone" {
+  name = "/${lower(var.project_name)}/terraform/aws-route53-zone"
+}
+
+data "aws_ssm_parameter" "host_route53_address_prefix" {
+  name = "/${lower(var.project_name)}/terraform/host-route53-address-prefix"
 }
 
 data "aws_key_pair" "main" {
   key_name = data.aws_ssm_parameter.key_pair_name.value
+}
+
+data "aws_route53_zone" "selected" {
+  name = data.aws_ssm_parameter.aws_route53_zone.value
 }
