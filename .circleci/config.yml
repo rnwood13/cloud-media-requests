@@ -1,0 +1,75 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+orbs:
+  terraform: circleci/terraform@3.0.0
+
+jobs:
+  packer-build:
+    docker:
+      - image: hashicorp/packer
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Initialize
+          command: packer init ./packer
+      - run:
+          name: Validate
+          command: packer validate ./packer
+      - run:
+          name: Format
+          command: packer fmt -check -diff ./packer
+      - run:
+          name: Build AMI
+          command: packer build ./packer
+          no_output_timeout: 15m
+
+workflows:
+  version: 2
+  packer_build:
+    when:
+      and:
+        - equal: [scheduled_pipeline, << pipeline.trigger_source >>]
+        - equal: ["Packer Build", << pipeline.schedule.name >>]
+    jobs:
+      - packer-build:
+          context: terraform
+  deploy_infrastructure:
+    when:
+      not:
+        equal: [scheduled_pipeline, << pipeline.trigger_source >>]
+    jobs:
+      - terraform/fmt:
+          path: ./terraform
+          checkout: true
+      - terraform/validate:
+          path: ./terraform
+          checkout: true
+          context: terraform
+          requires:
+            - terraform/fmt
+      - terraform/plan:
+          path: ./terraform
+          checkout: true
+          context: terraform
+          persist-workspace: true
+          requires:
+            - terraform/validate
+      - hold:
+          type: approval
+          filters:
+            branches:
+              only: main
+          requires:
+            - terraform/plan
+      - terraform/apply:
+          path: ./terraform
+          attach-workspace: true
+          context: terraform
+          filters:
+            branches:
+              only: main
+          requires:
+            - hold
