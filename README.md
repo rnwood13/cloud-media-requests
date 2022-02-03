@@ -22,6 +22,9 @@ A few things are required before getting started:
 * Remote media server infrastructure to handle requests
 * A domain name
 
+I am also using an existing AWS hosted zone, which I get with a data call, but this could be created via Terraform as well.
+Instead of using variables for everything, some items use an AWS Parameter Store data call, but these could easily be converted to Terraform variables.
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
