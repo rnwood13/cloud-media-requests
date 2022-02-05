@@ -4,10 +4,34 @@
 ansible_ssh_private_key_file: ~/.ssh/aws-key-pair.pem
 repository: https://github.com/rnwood13/docker-nginx-letsencrypt-ombi.git
 
-# Pull variables from AWS Parameter Store
+# Variables for WireGuard
 wg_private_ip: "{{ lookup('aws_ssm', '/woodybox/wireguard/peer-tunnel-address', region='us-east-2', on_missing='error') }}"
 wg_private_key: "{{ lookup('aws_ssm', '/woodybox/wireguard/private-key', region='us-east-2', decrypt=True, on_missing='error') }}"
 wg_public_key: "{{ lookup('aws_ssm', '/woodybox/wireguard/public-key', region='us-east-2', on_missing='error') }}"
 wg_endpoint: "{{ lookup('aws_ssm', '/woodybox/wireguard/endpoint', region='us-east-2', on_missing='error') }}"
 wg_listen_port: "{{ lookup('aws_ssm', '/woodybox/wireguard/endpoint-listen-port', region='us-east-2', on_missing='error') }}"
 wg_allowed_ips: "{{ lookup('aws_ssm', '/woodybox/wireguard/allowed-ips', region='us-east-2', on_missing='error') }}"
+
+# Variables for Media Requests DB backup/restore
+mr_db_backup_bucket_name: "{{ lookup('aws_ssm', '/woodybox/media-requests/s3-db-backup-bucket-name', region='us-east-2', on_missing='error') }}"
+
+# Variables for .env template for docker-compose
+env_nginx_image_version: stable-alpine
+env_nginx_proxy_companion_image_version: 2.1
+env_docker_gen_image_version: 0.8
+env_ombi_image_version: 4.10.2
+env_ipv4: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+env_network: proxy
+env_nginx_files_path: ./data
+env_docker_http: 80
+env_docker_https: 443
+env_ssl_policy: Mozilla-Intermediate
+env_default_email: "{{ lookup('aws_ssm', '/woodybox/media-requests/default-email', region='us-east-2', on_missing='error') }}"
+env_ombi_files_path: ./config/ombi
+env_ombi_puid: 1000
+env_ombi_pgid: 1000
+env_ombi_tz: America/Chicago
+env_ombi_hostname: "{{ lookup('aws_ssm', '/woodybox/terraform/host-route53-address', region='us-east-2', on_missing='error') }}"
+
+# Variables for compose repo
+compose_repo_directory: ./compose

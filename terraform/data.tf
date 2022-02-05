@@ -20,6 +20,10 @@ data "aws_ssm_parameter" "host_route53_address_prefix" {
   name = "/${lower(var.project_name)}/terraform/host-route53-address-prefix"
 }
 
+data "aws_ssm_parameter" "mr_db_backup_bucket_name" {
+  name = "/${lower(var.project_name)}/media-requests/s3-db-backup-bucket-name"
+}
+
 data "aws_key_pair" "main" {
   key_name = data.aws_ssm_parameter.key_pair_name.value
 }

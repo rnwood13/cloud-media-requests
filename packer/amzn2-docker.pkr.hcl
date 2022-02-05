@@ -95,4 +95,11 @@ build {
       "sudo systemctl enable wg-quick@wg0.service"
     ]
   }
+
+  provisioner "shell" {
+    inline = [
+      "echo Installing boto3",
+      "python3 -m pip install boto3 --user"
+    ]
+  }
 }

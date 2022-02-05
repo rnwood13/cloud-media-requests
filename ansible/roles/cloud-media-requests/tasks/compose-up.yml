@@ -1,0 +1,7 @@
+---
+# Generate .env file from template and docker-compose up
+
+- name: Generate .env file
+  template:
+    src: ".env.j2"
+    dest: "{{ compose_repo_directory }}/.env"

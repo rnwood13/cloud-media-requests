@@ -28,6 +28,7 @@ resource "aws_instance" "docker_host" {
   key_name                    = data.aws_key_pair.main.key_name
   vpc_security_group_ids      = [module.security_group.security_group_id]
   subnet_id                   = module.vpc.public_subnets[0]
+  iam_instance_profile        = aws_iam_instance_profile.media_requests_backup_restore.name
 
   root_block_device {
     volume_size           = "20"
