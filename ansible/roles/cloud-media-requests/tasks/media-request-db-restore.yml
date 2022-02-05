@@ -1,0 +1,33 @@
+---
+# Restore media request app's database to host
+
+- name: Create config directory
+  file:
+    # path: "~/compose/config/ombi"
+    path: "{{ compose_repo_directory }}/{{ env_ombi_files_path }}"
+    state: directory
+
+- name: Restore media request DB
+  amazon.aws.aws_s3:
+    bucket: "{{ mr_db_backup_bucket_name }}"
+    object: Ombi.db
+    dest: "{{ compose_repo_directory }}/{{ env_ombi_files_path }}/Ombi.db"
+    # dest: ~/compose/config/ombi/Ombi.db
+    mode: get
+    overwrite: different
+
+- name: Restore media request DB
+  amazon.aws.aws_s3:
+    bucket: "{{ mr_db_backup_bucket_name }}"
+    object: OmbiExternal.db
+    dest: "{{ compose_repo_directory }}/{{ env_ombi_files_path }}/OmbiExternal.db"
+    mode: get
+    overwrite: different
+
+- name: Restore media request DB
+  amazon.aws.aws_s3:
+    bucket: "{{ mr_db_backup_bucket_name }}"
+    object: OmbiSettings.db
+    dest: "{{ compose_repo_directory }}/{{ env_ombi_files_path }}/OmbiSettings.db"
+    mode: get
+    overwrite: different

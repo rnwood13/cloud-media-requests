@@ -3,3 +3,4 @@
 
 - include_tasks: git-clone.yml
 - include_tasks: wireguard.yml
+- include_tasks: media-request-db-restore.yml
