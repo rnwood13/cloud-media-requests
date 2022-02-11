@@ -35,3 +35,4 @@ env_ombi_hostname: "{{ lookup('aws_ssm', '/woodybox/terraform/host-route53-addre
 
 # Variables for compose repo
 compose_repo_directory: ./compose
+compose_repo_full_path: /home/ec2-user/compose
