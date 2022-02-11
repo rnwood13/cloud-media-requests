@@ -64,3 +64,9 @@ Here is an example of how to begin development on Ubuntu.
 Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+## Thanks
+
+* luzifer-ansible's [docker-compose](https://github.com/luzifer-ansible/docker-compose) project
+
+<p align="right">(<a href="#top">back to top</a>)</p>
