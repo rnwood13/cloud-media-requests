@@ -1,0 +1,43 @@
+---
+# Restore Ombi database to host
+
+- name: Create config directory for Ombi
+  file:
+    path: "{{ compose_repo_directory }}/{{ env_ombi_files_path }}"
+    state: directory
+  tags:
+    - restore
+  when: mr_app_name|lower == "ombi"
+
+- name: Restore Ombi DB
+  amazon.aws.aws_s3:
+    bucket: "{{ mr_db_backup_bucket_name }}"
+    object: Ombi.db
+    dest: "{{ compose_repo_directory }}/{{ env_ombi_files_path }}/Ombi.db"
+    mode: get
+    overwrite: never
+  tags:
+    - restore
+  when: mr_app_name|lower == "ombi"
+
+- name: Restore Ombi External DB
+  amazon.aws.aws_s3:
+    bucket: "{{ mr_db_backup_bucket_name }}"
+    object: OmbiExternal.db
+    dest: "{{ compose_repo_directory }}/{{ env_ombi_files_path }}/OmbiExternal.db"
+    mode: get
+    overwrite: never
+  tags:
+    - restore
+  when: mr_app_name|lower == "ombi"
+
+- name: Restore Ombi Settings DB
+  amazon.aws.aws_s3:
+    bucket: "{{ mr_db_backup_bucket_name }}"
+    object: OmbiSettings.db
+    dest: "{{ compose_repo_directory }}/{{ env_ombi_files_path }}/OmbiSettings.db"
+    mode: get
+    overwrite: never
+  tags:
+    - restore
+  when: mr_app_name|lower == "ombi"

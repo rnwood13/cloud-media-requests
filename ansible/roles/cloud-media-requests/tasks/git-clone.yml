@@ -4,6 +4,13 @@
 - name: Clone docker-nginx-letsencrypt-ombi
   git:
     repo: "{{ repository }}"
-    dest: /home/ec2-user/compose
+    dest: "{{ compose_repo_directory }}"
     clone: yes
     update: yes
+
+# Generate .env file from template
+
+- name: Generate .env file
+  template:
+    src: ".env.j2"
+    dest: "{{ compose_repo_directory }}/.env"

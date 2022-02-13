@@ -1,0 +1,70 @@
+---
+# Generate .env file from template
+
+- name: Generate .env file
+  template:
+    src: ".env.j2"
+    dest: "{{ compose_repo_directory }}/.env"
+  register: compose_envs
+
+# Install and start services
+
+- name: Install docker-compose.service
+  copy:
+    dest: /etc/systemd/system/docker-compose.service
+    content: |
+      [Unit]
+      Description=Docker Compose container starter
+      After=docker.service network-online.target
+      Requires=docker.service network-online.target
+      [Service]
+      WorkingDirectory={{ compose_repo_full_path }}
+      Type=oneshot
+      RemainAfterExit=yes
+      ExecStartPre=-/usr/local/bin/docker-compose pull --quiet --ignore-pull-failures
+      ExecStart=/usr/local/bin/docker-compose up -d --remove-orphans
+      ExecStop=/usr/local/bin/docker-compose down
+      ExecReload=/usr/local/bin/docker-compose pull --quiet --ignore-pull-failures
+      ExecReload=/usr/local/bin/docker-compose up -d --remove-orphans
+      [Install]
+      WantedBy=docker.service
+  become: true
+  become_user: root
+  register: docker_compose_service
+
+- name: Enable docker-compose service
+  systemd:
+    name: docker-compose.service
+    daemon_reload: true
+    enabled: true
+  become: true
+  become_user: root
+
+- name: Restart service if service configuration changed
+  systemd:
+    name: docker-compose.service
+    daemon_reload: true
+    state: restarted
+  become: true
+  become_user: root
+  when: docker_compose_service.changed
+
+- name: Reload and apply configuration
+  systemd:
+    name: docker-compose.service
+    state: reloaded
+  become: true
+  become_user: root
+  when: compose_envs.changed
+
+- name: Install docker-compose-reload.service
+  copy:
+    dest: /etc/systemd/system/docker-compose-reload.service
+    content: |
+      [Unit]
+      Description=Refresh images and update containers
+      [Service]
+      Type=oneshot
+      ExecStart=/bin/systemctl reload-or-restart docker-compose.service
+  become: true
+  become_user: root
