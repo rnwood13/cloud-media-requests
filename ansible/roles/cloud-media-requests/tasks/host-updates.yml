@@ -1,0 +1,10 @@
+---
+# Basic host operations
+
+- name: Upgrade all packages
+  yum:
+    name: "*"
+    state: latest
+  become: true
+  become_user: root
+  when: host_keep_updated
