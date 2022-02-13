@@ -1,6 +1,7 @@
 ---
 # Include all tasks related to Cloud Media Requests
 
+- include_tasks: host-updates.yml
 - include_tasks: git-clone.yml
 - include_tasks: wireguard.yml
 - include_tasks: media-request-db-restore.yml

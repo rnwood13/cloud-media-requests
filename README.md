@@ -11,6 +11,24 @@ The main goal is cost-effectiveness and simplicity, so reliability and scalabili
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
+## Details
+
+### Ansible
+
+Variables and container image versions are set in `ansible/group_vars/all.yml`.  
+Ansible runs after the EC2 instance is brought online and performs the following:  
+
+* Updates YUM
+* Clones [the docker-compose repo](https://github.com/rnwood13/docker-nginx-letsencrypt-ombi)
+* Sets up WireGuard to talk back to the remote media server
+* Restores the media requests database from S3 (if applicable)
+* Configures docker-compose as a systemd process and starts it
+
+Some variables are stored in AWS Parameter Store for ease of use and my own privacy.  
+There is a media request database backup task that is intended to be run ad-hoc, using something like:  
+`ansible -i inventory -m include_tasks -a file=roles/cloud-media-requests/tasks/media-request-db-backup.yml _Servers -e ansible_ssh_private_key_file=~/.ssh/aws-key-pair.pem -u ec2-user`.  
+The idea is that this would be automated and periodically backup the DB to S3.  
+
 
 ## Getting Started
 

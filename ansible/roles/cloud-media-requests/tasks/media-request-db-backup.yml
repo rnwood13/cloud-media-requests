@@ -1,0 +1,30 @@
+---
+# Backup Ombi database to S3
+
+# Using `command` instead of docker or aws_s3_module
+# due to requirement for Python requests and S3 ACLs
+# `ignore_errors` is set to true so that the container
+# starts back up in case of error during backup
+
+- name: Stop Ombi container
+  command: docker stop ombi
+  when: mr_app_name|lower == "ombi"
+
+- name: Backup Ombi DB
+  command: aws s3 cp "{{ compose_repo_directory }}/{{ env_ombi_files_path }}/Ombi.db" s3://"{{ mr_db_backup_bucket_name }}"
+  ignore_errors: true
+  when: mr_app_name|lower == "ombi"
+
+- name: Backup Ombi External DB
+  command: aws s3 cp "{{ compose_repo_directory }}/{{ env_ombi_files_path }}/OmbiExternal.db" s3://"{{ mr_db_backup_bucket_name }}"
+  ignore_errors: true
+  when: mr_app_name|lower == "ombi"
+
+- name: Backup Ombi Settings DB
+  command: aws s3 cp "{{ compose_repo_directory }}/{{ env_ombi_files_path }}/OmbiSettings.db" s3://"{{ mr_db_backup_bucket_name }}"
+  ignore_errors: true
+  when: mr_app_name|lower == "ombi"
+
+- name: Start Ombi container
+  command: docker start ombi
+  when: mr_app_name|lower == "ombi"

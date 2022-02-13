@@ -1,8 +1,10 @@
 ---
 # Variables for servers
-
 ansible_ssh_private_key_file: ~/.ssh/aws-key-pair.pem
 repository: https://github.com/rnwood13/docker-nginx-letsencrypt-ombi.git
+
+# Variables for host
+host_keep_updated: true
 
 # Variables for WireGuard
 wg_private_ip: "{{ lookup('aws_ssm', '/woodybox/wireguard/peer-tunnel-address', region='us-east-2', on_missing='error') }}"
@@ -14,6 +16,9 @@ wg_allowed_ips: "{{ lookup('aws_ssm', '/woodybox/wireguard/allowed-ips', region=
 
 # Variables for Media Requests DB backup/restore
 mr_db_backup_bucket_name: "{{ lookup('aws_ssm', '/woodybox/media-requests/s3-db-backup-bucket-name', region='us-east-2', on_missing='error') }}"
+
+# Variables for Media Request app
+mr_app_name: Ombi
 
 # Variables for .env template for docker-compose
 env_nginx_image_version: stable-alpine
