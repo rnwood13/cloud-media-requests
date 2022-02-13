@@ -26,6 +26,21 @@ jobs:
           command: packer build ./packer
           no_output_timeout: 15m
 
+  ansible-playbook:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            pip install ansible boto3
+      - run:
+          name: Deploy Ansible Playbook
+          command: |
+            cd ansible
+            ansible-playbook ec2-host.yml -i inventory --diff
+
 workflows:
   version: 2
   packer_build:
@@ -73,3 +88,10 @@ workflows:
               only: main
           requires:
             - hold
+  ansible-playbook:
+    jobs:
+      - ansible-playbook:
+          context: terraform
+          filters:
+            branches:
+              only: main
