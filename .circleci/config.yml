@@ -88,8 +88,6 @@ workflows:
               only: main
           requires:
             - hold
-  ansible-playbook:
-    jobs:
       - ansible-playbook:
           context: terraform
           filters:
