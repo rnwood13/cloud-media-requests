@@ -35,11 +35,29 @@ jobs:
           name: Install Dependencies
           command: |
             pip install ansible boto3
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+            aws --version
       - run:
           name: Deploy Ansible Playbook
           command: |
+            # Get Security Group ID
+            SG_ID=$(aws ec2 describe-security-groups --filters \
+              "Name=tag:Name,Values=Woodybox-Inbound-SSH" --query \
+              'SecurityGroups[].GroupId' | jq -r '.[]')
+            # Get the public IP of the current CircleCI runner
+            PUBLIC_IP=$(curl ipinfo.io/ip)
+            # Add an ingress rule to the security group
+            ~/bin/aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+              --protocol tcp --port 22 --cidr $PUBLIC_IP/32
+            sleep 5
+            # Deploy Ansible Playbook
             cd ansible
             ansible-playbook ec2-host.yml -i inventory --diff
+            # Remove the ingress rule
+            ~/bin/aws ec2 revoke-security-group-ingress --group-id $SG_ID \
+              --protocol tcp --port 22 --cidr $PUBLIC_IP/32
 
 workflows:
   version: 2
@@ -50,7 +68,7 @@ workflows:
         - equal: ["Packer Build", << pipeline.schedule.name >>]
     jobs:
       - packer-build:
-          context: terraform
+          context: aws
   deploy_infrastructure:
     when:
       not:
@@ -62,13 +80,13 @@ workflows:
       - terraform/validate:
           path: ./terraform
           checkout: true
-          context: terraform
+          context: aws
           requires:
             - terraform/fmt
       - terraform/plan:
           path: ./terraform
           checkout: true
-          context: terraform
+          context: aws
           persist-workspace: true
           requires:
             - terraform/validate
@@ -82,14 +100,14 @@ workflows:
       - terraform/apply:
           path: ./terraform
           attach-workspace: true
-          context: terraform
+          context: aws
           filters:
             branches:
               only: main
           requires:
             - hold
       - ansible-playbook:
-          context: terraform
+          context: aws
           filters:
             branches:
               only: main

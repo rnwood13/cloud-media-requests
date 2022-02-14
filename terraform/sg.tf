@@ -2,7 +2,7 @@ module "security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.8.0"
 
-  name        = "${var.project_name}-SSH"
+  name        = "${var.project_name}-Inbound-SSH"
   description = "Security group to allow inbound SSH"
   vpc_id      = module.vpc.vpc_id
 
@@ -19,4 +19,8 @@ module "security_group" {
   ]
 
   egress_rules = ["all-all"]
+
+  tags = {
+    Usage = "Inbound SSH for Media Requests Management"
+  }
 }
