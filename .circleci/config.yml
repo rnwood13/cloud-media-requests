@@ -29,6 +29,7 @@ jobs:
   ansible-playbook:
     docker:
       - image: cimg/python:3.10
+    resource_class: small
     steps:
       - checkout
       - run:
@@ -41,10 +42,13 @@ jobs:
             aws --version
       - run:
           name: Deploy Ansible Playbook
+          environment:
+            AWS_PAGER: ""
+            # PROJECT_NAME: ""  # Use CI environment variable or uncomment this line
           command: |
             # Get Security Group ID
             SG_ID=$(aws ec2 describe-security-groups --filters \
-              "Name=tag:Name,Values=Woodybox-Inbound-SSH" --query \
+              "Name=tag:Name,Values=$PROJECT_NAME-Inbound-SSH" --query \
               'SecurityGroups[].GroupId' | jq -r '.[]')
             # Get the public IP of the current CircleCI runner
             PUBLIC_IP=$(curl ipinfo.io/ip)
