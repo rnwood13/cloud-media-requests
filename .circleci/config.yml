@@ -49,14 +49,14 @@ jobs:
             # Get the public IP of the current CircleCI runner
             PUBLIC_IP=$(curl ipinfo.io/ip)
             # Add an ingress rule to the security group
-            ~/bin/aws ec2 authorize-security-group-ingress --group-id $SG_ID \
+            aws ec2 authorize-security-group-ingress --group-id $SG_ID \
               --protocol tcp --port 22 --cidr $PUBLIC_IP/32
             sleep 5
             # Deploy Ansible Playbook
             cd ansible
             ansible-playbook ec2-host.yml -i inventory --diff
             # Remove the ingress rule
-            ~/bin/aws ec2 revoke-security-group-ingress --group-id $SG_ID \
+            aws ec2 revoke-security-group-ingress --group-id $SG_ID \
               --protocol tcp --port 22 --cidr $PUBLIC_IP/32
 
 workflows:
