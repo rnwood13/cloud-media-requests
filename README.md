@@ -11,7 +11,34 @@ The main goal is cost-effectiveness and simplicity, so reliability and scalabili
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
+## Getting Started
+
+A few things are required before getting started:
+
+### Prerequisites
+
+* An active AWS account with programmatic access
+* Remote media server infrastructure to handle requests
+* A domain name
+
+I am also using an existing AWS hosted zone, which I get with a data call, but this could be created via Terraform as well.
+Instead of using variables for everything, some items use an AWS Parameter Store data call, but these could easily be converted to Terraform variables.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
 ## Details
+
+### Packer
+
+A weekly "golden image" is built and pushed to AWS as an AMI.  
+The main reason for this instead of using a public AMI is speed of startup, plus just wanting to use Packer.
+
+### Terraform
+
+The Terraform configuration is fairly straightforward - simply update the `terraform/terraform.tfvars`.  
+However, this project currently uses AWS Parameter Store for some variables in order to protect my privacy in this public repo (please see `terraform/data.tf` for details).  
+The Terraform also assumes an AWS hosted zone already exists - this decision was made so I could reuse an existing hosted zone for other projects.
 
 ### Ansible
 
@@ -29,19 +56,13 @@ There is a media request database backup task that is intended to be run ad-hoc,
 `ansible -i inventory -m include_tasks -a file=roles/cloud-media-requests/tasks/media-request-db-backup.yml _Servers -e ansible_ssh_private_key_file=~/.ssh/aws-key-pair.pem -u ec2-user`.  
 The idea is that this would be automated and periodically backup the DB to S3.  
 
+Note about CI: the CircleCI config has a job that adds a temporary Security Group rule allowing the /32 IP address of the runner in order to apply the Ansible. This requires the project name to be included as a CI environment variable or uncommenting the environment variable in the job itself. 
 
-## Getting Started
+### CircleCI
 
-A few things are required before getting started:
-
-### Prerequisites
-
-* An active AWS account with programmatic access
-* Remote media server infrastructure to handle requests
-* A domain name
-
-I am also using an existing AWS hosted zone, which I get with a data call, but this could be created via Terraform as well.
-Instead of using variables for everything, some items use an AWS Parameter Store data call, but these could easily be converted to Terraform variables.
+CI/CD is provided by CircleCI.  
+I have added SSH keys for Ansible as context variables as well as an environment variable for the project name.  
+See `.circleci/config.yml` for details.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
