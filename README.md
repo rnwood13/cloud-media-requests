@@ -4,7 +4,7 @@ Deploy a media request site such as [Ombi](https://ombi.io/) or [Overseerr](http
 
 The site runs in Docker behind a reverse proxy and provides HTTPS via Let's Encrypt. It then uses a VPN to communicate with a remote media server infrastructure (for example, Plex, Sonarr, Radarr, etc.).
 
-This project uses [Terraform](https://www.terraform.io/), [Ansible](https://www.ansible.com/), and [Packer](https://www.packer.io/) to create a golden image, deploy an EC2 instance, and configure Docker on the host. It 
+This project uses [Terraform](https://www.terraform.io/), [Ansible](https://www.ansible.com/), and [Packer](https://www.packer.io/) to create a golden image, deploy an EC2 instance, and configure Docker Compose on the host. 
 
 The main goal is cost-effectiveness and simplicity, so reliability and scalability practices such as load balancing or microservices are not currently a consideration.
 
