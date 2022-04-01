@@ -1,5 +1,5 @@
-resource "aws_iam_role" "media_requests_backup_restore" {
-  name = "Media-Requests-Backup-Restore-Role"
+resource "aws_iam_role" "media_requests_host" {
+  name = "Media-Requests-Host-Role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -16,6 +16,7 @@ resource "aws_iam_role" "media_requests_backup_restore" {
   })
 }
 
+# S3 backup and restore SQLite DB
 data "aws_iam_policy_document" "media_requests_backup_restore" {
   statement {
     sid = "1"
@@ -42,11 +43,42 @@ resource "aws_iam_policy" "media_requests_backup_restore" {
 }
 
 resource "aws_iam_role_policy_attachment" "media_requests_backup_restore" {
-  role       = aws_iam_role.media_requests_backup_restore.name
+  role       = aws_iam_role.media_requests_host.name
   policy_arn = aws_iam_policy.media_requests_backup_restore.arn
 }
 
-resource "aws_iam_instance_profile" "media_requests_backup_restore" {
-  name = "Media-Requests-Backup-Restore-Instance-Profile"
-  role = aws_iam_role.media_requests_backup_restore.name
+resource "aws_iam_instance_profile" "media_requests_host" {
+  name = "Media-Requests-Host-Instance-Profile"
+  role = aws_iam_role.media_requests_host.name
+}
+
+# CloudWatch Agent
+data "aws_iam_policy_document" "cloudwatch_agent_put_logs_retention" {
+  statement {
+    sid = "1"
+
+    actions = ["logs:PutRetentionPolicy"]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "cloudwatch_agent_put_logs_retention" {
+  name   = "WoodyBox-CloudWatchAgentPutLogsRetention"
+  path   = "/"
+  policy = data.aws_iam_policy_document.cloudwatch_agent_put_logs_retention.json
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_agent_put_logs_retention" {
+  role       = aws_iam_role.media_requests_host.name
+  policy_arn = aws_iam_policy.cloudwatch_agent_put_logs_retention.arn
+}
+
+data "aws_iam_policy" "cloudwatch_agent_server_policy" {
+  arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_agent_server_policy" {
+  role       = aws_iam_role.media_requests_host.name
+  policy_arn = data.aws_iam_policy.cloudwatch_agent_server_policy.arn
 }

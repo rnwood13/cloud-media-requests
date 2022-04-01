@@ -1,0 +1,5 @@
+---
+# CloudWatch Agent tasks
+
+- name: Fetch CloudWatch config and Start CloudWatch Agent
+  command: sudo amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c ssm:{{ cloudwatch_agent_ssm_filename }} -s

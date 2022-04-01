@@ -57,3 +57,15 @@ variable "host_instance_type" {
   type    = string
   default = "t3.micro"
 }
+
+variable "media_request_database_type" {
+  description = "The type of DB for Ombi. Can be either 'sqlite' or 'mariadb'."
+  type        = string
+  default     = "mariadb"
+}
+
+variable "media_request_database_size" {
+  description = "The DB instance size if 'media_request_database_type' is set to 'mariadb'."
+  type        = string
+  default     = "db.t4g.micro"
+}
