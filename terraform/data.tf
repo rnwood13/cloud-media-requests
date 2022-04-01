@@ -31,3 +31,7 @@ data "aws_key_pair" "main" {
 data "aws_route53_zone" "selected" {
   name = data.aws_ssm_parameter.aws_route53_zone.value
 }
+
+data "aws_ssm_parameter" "rds_password" {
+  name = "/${lower(var.project_name)}/terraform/rds-password"
+}

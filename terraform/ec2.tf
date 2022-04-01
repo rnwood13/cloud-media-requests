@@ -31,13 +31,17 @@ resource "aws_instance" "docker_host" {
     module.sg_host_inbound_web.security_group_id
   ]
   subnet_id            = module.vpc.public_subnets[0]
-  iam_instance_profile = aws_iam_instance_profile.media_requests_backup_restore.name
+  iam_instance_profile = aws_iam_instance_profile.media_requests_host.name
 
   root_block_device {
     volume_size           = "20"
     volume_type           = "gp3"
     encrypted             = true
     delete_on_termination = true
+  }
+
+  credit_specification {
+    cpu_credits = "standard"
   }
 
   tags = {

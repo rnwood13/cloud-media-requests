@@ -54,3 +54,29 @@ module "sg_host_inbound_web" {
     Usage = "Inbound web traffic for Media Requests Management"
   }
 }
+
+module "sg_maria_db_rds" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "4.8.0"
+
+  name        = "${var.project_name}-MariaDB-RDS"
+  description = "Allow TLS inbound traffic"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress_cidr_blocks = module.vpc.public_subnets_cidr_blocks
+
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 3306
+      to_port     = 3306
+      protocol    = "tcp"
+      description = "Mariadb Access from within the VPC"
+    }
+  ]
+
+  egress_rules = ["all-all"]
+
+  tags = {
+    Usage = "Allow access to mariadb RDS"
+  }
+}

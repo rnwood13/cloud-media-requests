@@ -18,7 +18,7 @@
     overwrite: never
   tags:
     - restore
-  when: mr_app_name|lower == "ombi"
+  when: (mr_app_name|lower == "ombi") and (mr_db_type|lower == "sqlite")
 
 - name: Restore Ombi External DB
   amazon.aws.aws_s3:
@@ -29,7 +29,7 @@
     overwrite: never
   tags:
     - restore
-  when: mr_app_name|lower == "ombi"
+  when: (mr_app_name|lower == "ombi") and (mr_db_type|lower == "sqlite")
 
 - name: Restore Ombi Settings DB
   amazon.aws.aws_s3:
@@ -40,4 +40,12 @@
     overwrite: never
   tags:
     - restore
-  when: mr_app_name|lower == "ombi"
+  when: (mr_app_name|lower == "ombi") and (mr_db_type|lower == "sqlite")
+
+# Generate database.json file for MariaDB
+
+- name: Generate database.json file
+  template:
+    src: "database.json.j2"
+    dest: "{{ compose_repo_directory }}/{{ env_ombi_files_path }}/database.json"
+  when: mr_db_type|lower == "mariadb"

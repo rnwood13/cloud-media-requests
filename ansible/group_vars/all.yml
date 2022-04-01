@@ -5,6 +5,7 @@ repository: https://github.com/rnwood13/docker-nginx-letsencrypt-ombi.git
 
 # Variables for host
 host_keep_updated: true
+cloudwatch_agent_ssm_filename: AmazonCloudWatch-WoodyBox-Docker-Host
 
 # Variables for WireGuard
 wg_private_ip: "{{ lookup('aws_ssm', '/woodybox/wireguard/peer-tunnel-address', region='us-east-2', on_missing='error') }}"
@@ -14,17 +15,20 @@ wg_endpoint: "{{ lookup('aws_ssm', '/woodybox/wireguard/endpoint', region='us-ea
 wg_listen_port: "{{ lookup('aws_ssm', '/woodybox/wireguard/endpoint-listen-port', region='us-east-2', on_missing='error') }}"
 wg_allowed_ips: "{{ lookup('aws_ssm', '/woodybox/wireguard/allowed-ips', region='us-east-2', on_missing='error') }}"
 
-# Variables for Media Requests DB backup/restore
+# Variables for Media Requests DB
 mr_db_backup_bucket_name: "{{ lookup('aws_ssm', '/woodybox/media-requests/s3-db-backup-bucket-name', region='us-east-2', on_missing='error') }}"
+mr_db_mariadb_endpoint: "{{ lookup('aws_ssm', '/woodybox/media-requests/rds-mariadb-endpoint', region='us-east-2', on_missing='error') }}"
+mr_db_password: "{{ lookup('aws_ssm', '/woodybox/media-requests/rds-ombi-password', region='us-east-2', decrypt=True, on_missing='error') }}"
 
 # Variables for Media Request app
 mr_app_name: Ombi
+mr_db_type: mariadb # Can be either 'sqlite' or 'mariadb'
 
 # Variables for .env template for docker-compose
 env_nginx_image_version: stable-alpine
 env_nginx_proxy_companion_image_version: 2.1
 env_docker_gen_image_version: 0.8
-env_ombi_image_version: 4.10.2
+env_ombi_image_version: 4.15.4-development
 env_ipv4: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 env_network: proxy
 env_nginx_files_path: ./data
