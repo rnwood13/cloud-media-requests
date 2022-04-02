@@ -102,4 +102,11 @@ build {
       "python3 -m pip install boto3 --user"
     ]
   }
+
+  provisioner "shell" {
+    inline = [
+      "echo Installing CloudWatch agent",
+      "sudo yum install amazon-cloudwatch-agent"
+    ]
+  }
 }
