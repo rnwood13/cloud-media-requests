@@ -106,7 +106,7 @@ build {
   provisioner "shell" {
     inline = [
       "echo Installing CloudWatch agent",
-      "sudo yum install amazon-cloudwatch-agent"
+      "sudo yum install -y amazon-cloudwatch-agent"
     ]
   }
 }
