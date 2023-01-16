@@ -5,5 +5,7 @@
 - include_tasks: git-clone.yml
 - include_tasks: wireguard.yml
 - include_tasks: media-request-db-restore.yml
+- include_tasks: grafana-agent.yml
+- include_tasks: grafana-loki.yml
 - include_tasks: compose-systemd.yml
 - include_tasks: cloudwatch-agent.yml

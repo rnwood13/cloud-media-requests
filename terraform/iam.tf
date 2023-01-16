@@ -64,14 +64,16 @@ data "aws_iam_policy_document" "cloudwatch_agent_put_logs_retention" {
 }
 
 resource "aws_iam_policy" "cloudwatch_agent_put_logs_retention" {
+  count  = var.cloudwatch_enable ? 1 : 0
   name   = "WoodyBox-CloudWatchAgentPutLogsRetention"
   path   = "/"
   policy = data.aws_iam_policy_document.cloudwatch_agent_put_logs_retention.json
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch_agent_put_logs_retention" {
+  count      = var.cloudwatch_enable ? 1 : 0
   role       = aws_iam_role.media_requests_host.name
-  policy_arn = aws_iam_policy.cloudwatch_agent_put_logs_retention.arn
+  policy_arn = aws_iam_policy.cloudwatch_agent_put_logs_retention[0].arn
 }
 
 data "aws_iam_policy" "cloudwatch_agent_server_policy" {
@@ -79,6 +81,7 @@ data "aws_iam_policy" "cloudwatch_agent_server_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch_agent_server_policy" {
+  count      = var.cloudwatch_enable ? 1 : 0
   role       = aws_iam_role.media_requests_host.name
   policy_arn = data.aws_iam_policy.cloudwatch_agent_server_policy.arn
 }
