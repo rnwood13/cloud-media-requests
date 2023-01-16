@@ -69,3 +69,8 @@ variable "media_request_database_size" {
   type        = string
   default     = "db.t4g.micro"
 }
+
+variable "cloudwatch_enable" {
+  type    = bool
+  default = false
+}

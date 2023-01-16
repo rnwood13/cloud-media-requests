@@ -1,0 +1,44 @@
+server:
+  log_level: info
+
+metrics:
+  global:
+    scrape_interval: 15s
+    remote_write:
+      - url: {{ env_grafana_agent_remote_rewrite_url }}
+  configs:
+    - name: default
+      scrape_configs:
+        - job_name: agent
+          static_configs:
+            - targets: ['127.0.0.1:12345']
+
+logs:
+  configs:
+  - name: host
+    positions:
+      filename: /tmp/positions.yaml
+    scrape_configs:
+      - job_name: ec2
+        static_configs:
+          - targets: [localhost]
+            labels:
+              job: ec2
+              __path__: /var/log/*log
+    clients:
+      - url: {{ env_logging_loki_url }}
+
+integrations:
+  agent:
+    enabled: true
+  node_exporter:
+    enabled: true
+    metric_relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: media-request-host
+        action: replace
+      - source_labels: [__address__]
+        target_label: agent_hostname
+        replacement: media-request-host
+        action: replace
