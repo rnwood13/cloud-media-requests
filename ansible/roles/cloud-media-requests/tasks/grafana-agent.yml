@@ -9,4 +9,4 @@
 - name: Generate grafana-agent.yaml file
   template:
     src: "grafana-agent.yaml.j2"
-    dest: "{{ env_grafana_agent_files_path }}/grafana-agent.yaml"
+    dest: "{{ compose_repo_directory }}/{{ env_grafana_agent_files_path }}/grafana-agent.yaml"
