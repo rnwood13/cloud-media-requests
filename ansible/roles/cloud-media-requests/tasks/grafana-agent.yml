@@ -1,7 +1,7 @@
 ---
 # Generate granfa-agnet.yaml file from template
 
-- name: Create config directory for Ombi
+- name: Create config directory for Grafana Agent
   file:
     path: "{{ compose_repo_directory }}/{{ env_grafana_agent_files_path }}"
     state: directory
