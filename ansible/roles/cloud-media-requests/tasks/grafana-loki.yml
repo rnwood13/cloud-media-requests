@@ -1,6 +1,0 @@
----
-# Grafana Loki logging tasks
-
-- name: Install Grafana Loki Docker plugin
-  command: docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
-  when: env_logging_driver == "loki"
