@@ -12,3 +12,4 @@ host_enable                 = true
 host_instance_type          = "t3.micro"
 media_request_database_size = "db.t4g.micro"
 media_request_database_type = "mariadb"
+cloudwatch_enable           = false
