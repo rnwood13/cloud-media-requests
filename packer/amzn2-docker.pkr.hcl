@@ -56,9 +56,6 @@ build {
   ]
 
   provisioner "shell" {
-    environment_vars = [
-      "FOO=hello world",
-    ]
     inline = [
       "echo Installing Docker",
       "sleep 10",
@@ -67,6 +64,13 @@ build {
       "sudo service docker start",
       "sudo systemctl enable docker",
       "sudo usermod -a -G docker ec2-user"
+    ]
+  }
+
+  provisioner "shell" {
+    inline = [
+      "echo Installing Docker loki Plugin",
+      "sudo docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions",
     ]
   }
 
