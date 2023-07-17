@@ -29,7 +29,7 @@ mr_db_type: mariadb # Can be either 'sqlite' or 'mariadb'
 env_nginx_image_version: stable-alpine
 env_nginx_proxy_companion_image_version: 2.2
 env_docker_gen_image_version: "0.10"
-env_ombi_image_version: 4.42.1-development
+env_ombi_image_version: 4.43.1-development
 env_grafana_agent_image_version: v0.30.2
 env_ipv4: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 env_network: proxy
