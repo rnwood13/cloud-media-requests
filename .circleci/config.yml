@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-            pip install ansible boto3
+            pip install boto3 ansible~=9
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
