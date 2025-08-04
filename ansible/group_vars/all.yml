@@ -27,8 +27,8 @@ mr_db_type: mariadb # Can be either 'sqlite' or 'mariadb'
 
 # Variables for .env template for docker-compose
 env_nginx_image_version: stable-alpine
-env_nginx_proxy_companion_image_version: 2.6
-env_docker_gen_image_version: "0.15"
+env_nginx_proxy_companion_image_version: 2.5
+env_docker_gen_image_version: "0.14"
 env_ombi_image_version: 4.47.1
 env_grafana_agent_image_version: v0.30.2
 env_ipv4: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
